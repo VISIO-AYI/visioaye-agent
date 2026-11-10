@@ -1,0 +1,23 @@
+node_modules/
+dist/
+*.tsbuildinfo
+.env
+.env.local
+
+# Cle privee de signature des updates - jamais commiter
+secrets/
+*.pem
+*.key
+
+# Local SQLite (store + queue)
+*.sqlite
+*.sqlite-journal
+*.sqlite-shm
+*.sqlite-wal
+
+# Packaging outputs
+out/
+builds/
+*.msi
+*.pkg
+*.deb

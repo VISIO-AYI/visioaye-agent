@@ -1,0 +1,120 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package
+    Name="VisioAye Agent"
+    Manufacturer="VisioAye"
+    Version="$(AgentVersion)"
+    UpgradeCode="7B0F1E5C-2A3D-4B9C-8E71-F0D42A8C9A10"
+    Scope="perMachine"
+    InstallerVersion="500">
+
+    <MajorUpgrade DowngradeErrorMessage="Une version plus recente de VisioAye Agent est deja installee." />
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="VisioAye">
+        <Component Id="AgentExe" Guid="D3B7A4E9-1C8F-4E2D-9B10-A2F3E7C9D4B1" Bitness="always64">
+          <File Id="AgentExeFile"
+                Source="builds\visioaye_agent_win_x64.exe"
+                Name="visioaye_agent.exe"
+                KeyPath="yes" />
+        </Component>
+
+        <Component Id="NssmExe" Guid="E9F4A2B8-7D5C-4A6E-8B91-1F2E3D4C5A67" Bitness="always64">
+          <File Id="NssmExeFile"
+                Source="vendor\nssm\nssm.exe"
+                Name="nssm.exe"
+                KeyPath="yes" />
+        </Component>
+
+        <Component Id="RegisterInstallFolder"
+                   Guid="4A5B6C7D-8E9F-40A1-B2C3-D4E5F6A7B8C9"
+                   Bitness="always64">
+          <RegistryKey Root="HKLM" Key="Software\VisioAye\Agent">
+            <RegistryValue Name="InstallFolder" Type="string" Value="[INSTALLFOLDER]" KeyPath="yes" />
+          </RegistryKey>
+        </Component>
+      </Directory>
+    </StandardDirectory>
+
+    <Feature Id="Main" Title="VisioAye Agent" Level="1">
+      <ComponentRef Id="AgentExe" />
+      <ComponentRef Id="NssmExe" />
+      <ComponentRef Id="RegisterInstallFolder" />
+    </Feature>
+
+    <SetProperty Id="InstallServiceAction"
+                 Value="&quot;[INSTALLFOLDER]nssm.exe&quot; install visioaye_agent &quot;[INSTALLFOLDER]visioaye_agent.exe&quot;"
+                 Before="InstallServiceAction"
+                 Sequence="execute" />
+
+    <SetProperty Id="ConfigServiceAppDirAction"
+                 Value="&quot;[INSTALLFOLDER]nssm.exe&quot; set visioaye_agent AppDirectory &quot;[ProgramFiles64Folder]VisioAye&quot;"
+                 Before="ConfigServiceAppDirAction"
+                 Sequence="execute" />
+
+    <SetProperty Id="ConfigServiceStartupAction"
+                 Value="&quot;[INSTALLFOLDER]nssm.exe&quot; set visioaye_agent Start SERVICE_AUTO_START"
+                 Before="ConfigServiceStartupAction"
+                 Sequence="execute" />
+
+    <SetProperty Id="ConfigServiceRestartAction"
+                 Value="&quot;[INSTALLFOLDER]nssm.exe&quot; set visioaye_agent AppRestartDelay 5000"
+                 Before="ConfigServiceRestartAction"
+                 Sequence="execute" />
+
+    <SetProperty Id="ConfigServiceNoConsoleAction"
+                 Value="&quot;[INSTALLFOLDER]nssm.exe&quot; set visioaye_agent AppNoConsole 1"
+                 Before="ConfigServiceNoConsoleAction"
+                 Sequence="execute" />
+
+    <SetProperty Id="ConfigServiceStdoutAction"
+                 Value="&quot;[INSTALLFOLDER]nssm.exe&quot; set visioaye_agent AppStdout &quot;[ProgramFiles64Folder]VisioAye\agent.log&quot;"
+                 Before="ConfigServiceStdoutAction"
+                 Sequence="execute" />
+
+    <SetProperty Id="ConfigServiceStderrAction"
+                 Value="&quot;[INSTALLFOLDER]nssm.exe&quot; set visioaye_agent AppStderr &quot;[ProgramFiles64Folder]VisioAye\agent.log&quot;"
+                 Before="ConfigServiceStderrAction"
+                 Sequence="execute" />
+
+    <SetProperty Id="StartServiceAction"
+                 Value="&quot;[INSTALLFOLDER]nssm.exe&quot; start visioaye_agent"
+                 Before="StartServiceAction"
+                 Sequence="execute" />
+
+    <SetProperty Id="StopServiceAction"
+                 Value="&quot;[INSTALLFOLDER]nssm.exe&quot; stop visioaye_agent"
+                 Before="StopServiceAction"
+                 Sequence="execute" />
+
+    <SetProperty Id="RemoveServiceAction"
+                 Value="&quot;[INSTALLFOLDER]nssm.exe&quot; remove visioaye_agent confirm"
+                 Before="RemoveServiceAction"
+                 Sequence="execute" />
+
+    <CustomAction Id="InstallServiceAction" DllEntry="WixQuietExec64" Execute="deferred" Return="ignore" Impersonate="no" BinaryRef="Wix4UtilCA_X64" />
+    <CustomAction Id="ConfigServiceAppDirAction" DllEntry="WixQuietExec64" Execute="deferred" Return="ignore" Impersonate="no" BinaryRef="Wix4UtilCA_X64" />
+    <CustomAction Id="ConfigServiceStartupAction" DllEntry="WixQuietExec64" Execute="deferred" Return="ignore" Impersonate="no" BinaryRef="Wix4UtilCA_X64" />
+    <CustomAction Id="ConfigServiceRestartAction" DllEntry="WixQuietExec64" Execute="deferred" Return="ignore" Impersonate="no" BinaryRef="Wix4UtilCA_X64" />
+    <CustomAction Id="ConfigServiceNoConsoleAction" DllEntry="WixQuietExec64" Execute="deferred" Return="ignore" Impersonate="no" BinaryRef="Wix4UtilCA_X64" />
+    <CustomAction Id="ConfigServiceStdoutAction" DllEntry="WixQuietExec64" Execute="deferred" Return="ignore" Impersonate="no" BinaryRef="Wix4UtilCA_X64" />
+    <CustomAction Id="ConfigServiceStderrAction" DllEntry="WixQuietExec64" Execute="deferred" Return="ignore" Impersonate="no" BinaryRef="Wix4UtilCA_X64" />
+    <CustomAction Id="StartServiceAction" DllEntry="WixQuietExec64" Execute="deferred" Return="ignore" Impersonate="no" BinaryRef="Wix4UtilCA_X64" />
+    <CustomAction Id="StopServiceAction" DllEntry="WixQuietExec64" Execute="deferred" Return="ignore" Impersonate="no" BinaryRef="Wix4UtilCA_X64" />
+    <CustomAction Id="RemoveServiceAction" DllEntry="WixQuietExec64" Execute="deferred" Return="ignore" Impersonate="no" BinaryRef="Wix4UtilCA_X64" />
+
+    <InstallExecuteSequence>
+      <Custom Action="StopServiceAction" Before="RemoveFiles" Condition="Installed AND (REMOVE=&quot;ALL&quot; OR WIX_UPGRADE_DETECTED)" />
+      <Custom Action="RemoveServiceAction" After="StopServiceAction" Condition="Installed AND (REMOVE=&quot;ALL&quot; OR WIX_UPGRADE_DETECTED)" />
+      <Custom Action="InstallServiceAction" After="InstallFiles" Condition="NOT Installed" />
+      <Custom Action="ConfigServiceAppDirAction" After="InstallServiceAction" Condition="NOT Installed" />
+      <Custom Action="ConfigServiceStartupAction" After="ConfigServiceAppDirAction" Condition="NOT Installed" />
+      <Custom Action="ConfigServiceRestartAction" After="ConfigServiceStartupAction" Condition="NOT Installed" />
+      <Custom Action="ConfigServiceNoConsoleAction" After="ConfigServiceRestartAction" Condition="NOT Installed" />
+      <Custom Action="ConfigServiceStdoutAction" After="ConfigServiceNoConsoleAction" Condition="NOT Installed" />
+      <Custom Action="ConfigServiceStderrAction" After="ConfigServiceStdoutAction" Condition="NOT Installed" />
+      <Custom Action="StartServiceAction" After="ConfigServiceStderrAction" Condition="NOT Installed" />
+    </InstallExecuteSequence>
+  </Package>
+</Wix>

@@ -1,0 +1,57 @@
+{
+  "name": "visioaye-agent",
+  "version": "0.1.2",
+  "private": true,
+  "description": "Agent desktop VisioAye : service invisible pilote par le site web, sync bidirectionnelle des projets.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -w -p tsconfig.json",
+    "start": "node dist/main.js",
+    "lint": "oxlint --type-aware src/",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "package": "node scripts/build.mjs",
+    "package:win": "node scripts/build.mjs --target node22-win-x64",
+    "package:linux": "node scripts/build.mjs --target node22-linux-x64",
+    "package:mac": "node scripts/build.mjs --target node22-macos-x64",
+    "package:mac-arm": "node scripts/build.mjs --target node22-macos-arm64",
+    "package:msi": "node scripts/build-msi.mjs",
+    "release": "node scripts/build.mjs && node scripts/build-msi.mjs && node scripts/generate-latest-json.mjs",
+    "deploy": "node scripts/deploy.mjs",
+    "deploy:local": "node scripts/deploy-local.mjs"
+  },
+  "dependencies": {
+    "@fastify/cors": "^10.0.0",
+    "chokidar": "^4.0.0",
+    "fastify": "^5.0.0",
+    "node-sqlite3-wasm": "^0.8.0",
+    "undici": "^7.0.0",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/ws": "^8.5.0",
+    "@yao-pkg/pkg": "^6.0.0",
+    "oxlint": "^1.0.0",
+    "typescript": "^5.6.0",
+    "vitest": "^4.0.0"
+  },
+  "pkg": {
+    "scripts": [
+      "dist/**/*.js"
+    ],
+    "assets": [
+      "node_modules/node-sqlite3-wasm/dist/*.wasm"
+    ],
+    "targets": [
+      "node22-win-x64",
+      "node22-linux-x64"
+    ],
+    "outputPath": "builds"
+  }
+}
